@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+HONEYCHECKER_URI = 'http://127.0.0.1:55555'
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +37,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'padahoneywords',
+]
+
+
+PASSWORD_HASHERS = [
+'padahoneywords.hashers.HoneywordHasher',
+'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+'django.contrib.auth.hashers.Argon2PasswordHasher',
+'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
+
+AUTHENTICATION_BACKENDS = [
+'padahoneywords.backends.HoneywordsBackend',
+'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
