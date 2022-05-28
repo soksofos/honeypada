@@ -1,0 +1,5 @@
+a_file = open("cpass.txt")
+
+lines = a_file.readlines()
+for line in lines:
+    print(line)

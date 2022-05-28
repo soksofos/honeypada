@@ -24,83 +24,44 @@ nS = 0               # password must have at least nS special (non-letter non-di
 import random
 import sys
 import string
-
+import os
 # A short list of high-probability passwords that is used to initialize the
 # password list in case no password files are provided.
 high_probability_passwords = """
-123456
-1234567
-12345678
-123asdf
-Admin
-admin
-administrator
-asdf123
-backup
-backupexec
-changeme
-clustadm
-cluster
-compaq
-default
-dell
-dmz
-domino
-exchadm
-exchange
-ftp
-gateway
-guest
-lotus
-money
-notes
-office
-oracle
-pass
-password
-password!
-password1
-print
-qwerty
-replicate
-seagate
-secret
-sql
-sqlexec
-temp
-temp!
-temp123
-test
-test!
-test123
-tivoli
-veritas
-virus
-web
-www
-KKKKKKK
-"""
 
+"""
+#filenames = []
+#dicton = open(os.path.dirname(os.path.realpath(__file__)) + '\cpass.txt', "r")
+#lines = dicton.readlines()
+#for line in lines:
+#    print(line)
+#    filenames.extend( line.split() )
+#print(len(filenames))
 def read_password_files(filenames):
     """
     Return a list of passwords in all the password file(s), plus
     a proportional (according to parameter q) number of "noise" passwords.
     """
+    diction = open(os.path.dirname(os.path.realpath(__file__)) + '\cpass.txt', "r")
+    filenames = diction.readlines()
+#    lines = dicton.readlines()
+#    for line in lines:
+#        filenames.extend( line.split() )
+#    print(len(filenames))
     pw_list = [ ]
     if len(filenames)>0:
-        for filename in filenames:
-            if sys.version_info[0] == 3:
-                lines = open(filename,"r",errors='ignore').readlines()
-            else:
-                lines = open(filename,"r").readlines()
-            for line in lines:
-                pw_list.extend( line.split() )
+        lines = filenames
+        for line in lines:
+            pw_list.extend( line.split() )
     else:
         lines = high_probability_passwords.split()
         for line in lines:
             pw_list.extend( line.split() )
     # add noise passwords
+    print(pw_list)
     pw_list.extend( noise_list(int(q*len(pw_list))) )
+    print("read_password_files")
+    print(pw_list)
     return pw_list
 
 def noise_list(n):
@@ -117,6 +78,8 @@ def noise_list(n):
             w.append(chars[random.randrange(nchars)])
         w = ''.join(w)
         L.append(w)
+    print("noise_list")
+    print(L)
     return L
 
 def tough_nut():
@@ -130,6 +93,8 @@ def tough_nut():
     for j in range(k):
         w.append(chars[random.randrange(nchars)])
     w = ''.join(w)
+    print("this is tough_nut")
+    print(w)
     return w
 
 def syntax(p):
@@ -148,8 +113,9 @@ def syntax(p):
         else:
             S += 1
     if L >= nL and D >= nD and S >= nS:
+        return False
+    else:
         return True
-    return False
 
 def make_password(pw_list):
     """
@@ -162,6 +128,8 @@ def make_password(pw_list):
     k = len(random.choice(pw_list))
     # create list of all passwords of length k; we'll only use those in model
     L = [ pw for pw in pw_list if len(pw) == k ]
+    print("SSSSSSSSSSSSSSSSSSSSSSSSSS")
+    print(L)
     nL = len(L)
     # start answer with the first char of that random password
     # row = index of random password being used
@@ -197,6 +165,8 @@ def make_password(pw_list):
             j = j + 1
     if (nL > 0 or nD > 0 or nS > 0) and not syntax(ans):
         return make_password(pw_list)
+    print("this is make_passwords")
+    print(ans)
     return ans
 
 def generate_passwords( n, pw_list ):
@@ -207,10 +177,14 @@ def generate_passwords( n, pw_list ):
         while pw in ans:
             pw = make_password(pw_list)
         ans.append( pw )
+    print("this is generate_passwords")
+    print(ans)
     return ans
 
 def gen(password, n, filenames):
     pw_list = read_password_files(filenames)
     new_passwords = generate_passwords(n,pw_list)
     random.shuffle(new_passwords)
+    print("this is gen")
+    print(new_passwords)
     return new_passwords
