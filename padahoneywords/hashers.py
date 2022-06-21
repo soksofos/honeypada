@@ -15,7 +15,7 @@ class HoneywordHasher(PBKDF2PasswordHasher):
     """Honeyword Hasher
     Subclass of django.contrib.auth.hashers.PBKDF2PasswordHasher
     """
-    # Get settings
+    #  settings
     DEBUG = getattr(settings, 'DEBUG', None)
     HONEYWORDS_COUNT = getattr(settings, 'HONEYWORDS_COUNT', 19)
     try:
@@ -30,12 +30,16 @@ class HoneywordHasher(PBKDF2PasswordHasher):
 
     def hash(self, password, salt, iterations):
         hash = pbkdf2(password, salt, iterations, digest=self.digest)
+        print('try to und encode')
+        print(b64encode(hash).decode('ascii').strip())
         return b64encode(hash).decode('ascii').strip()
 
     def salt(self):
         salt = get_random_string(20)
         while Sweetwords.objects.filter(salt=salt).exists():
             salt = get_random_string(20)
+        print("this is salt")
+        print(salt)
         return salt
 
     def verify(self, password, encoded):
@@ -58,7 +62,6 @@ class HoneywordHasher(PBKDF2PasswordHasher):
 
     def encode(self, password, salt, iterations=PBKDF2PasswordHasher.iterations):
         sweetwords = [password]
-        # TODO document honeyword password generator settings
         sweetwords.extend(gen(password, self.HONEYWORDS_COUNT, []))
         # TODO implement honeywordtweak
         #for i in range(<bases+1>):
@@ -66,7 +69,7 @@ class HoneywordHasher(PBKDF2PasswordHasher):
         # TODO move test password into test suite instead
         if self.DEBUG:
             print("WARNING: In DEBUG mode, 'test' is added as a honeyword.")
-            sweetwords.extend(['test'])
+            sweetwords.extend(['pada123'])
         shuffle(sweetwords)
         hashes = []
         for swd in sweetwords:
@@ -75,4 +78,6 @@ class HoneywordHasher(PBKDF2PasswordHasher):
         self.honeychecker.update_index(salt, sweetwords.index(password))
         h = Sweetwords(salt=salt, sweetwords=dumps(hashes))
         h.save()
+        print('encode')
+        print(f"{self.algorithm}${iterations}${salt}${hashes[0]}")
         return f"{self.algorithm}${iterations}${salt}${hashes[0]}"

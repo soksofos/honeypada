@@ -7,14 +7,15 @@ from sqlite3 import connect
 from sys import exit
 from xmlrpc.server import SimpleXMLRPCServer
 
-### Settings
+#base settings for the honeyckeckr ip ,port and the name of database
 IP = '127.0.0.1'
 PORT = 55555
 DATABASE = 'honeychecker_db.sqlite3'
 ###
 
+#if the program has not run again or if the db was drop it creates the db
 def initialize():
-    """Initializes Honeychecker database if it has not been created."""
+
     if not isfile(DATABASE):
         with closing(connect(DATABASE)) as conn:
             print(f"Creating database: {DATABASE}")
@@ -25,7 +26,7 @@ def initialize():
                 )
 
 def check_index(salt, index):
-    """Checks validity of password index."""
+    """Checks if the password index was valid."""
     with closing(connect(DATABASE)) as conn:
         cur = conn.cursor()
         cur.execute('SELECT idx FROM indices WHERE salt=?;', (salt,))
@@ -38,7 +39,7 @@ def check_index(salt, index):
             return False
 
 def update_index(salt, index):
-    """Inserts salt:index values into database."""
+    """new or update salt:index values to the database."""
     with closing(connect(DATABASE)) as conn:
         cur = conn.cursor()
         print(f'Inserting new index: {salt}:{index}')

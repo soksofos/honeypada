@@ -1,32 +1,31 @@
 
-##############################################################################
-#### PARAMETERS CONTROLLING PASSWORD GENERATION (aside from password files)
 
-tn = 0.08            # probability that a generated password is a ``tough nut''
-                     # (password of length 40 of random chars)
-                     # otherwise following parameters apply
+# params to control pass generation
+
+tn = 0.08            # propability of a very hard password
+
 
 # probabilities p1, p2, p3 add up to 1 (heuristically chosen)
-p1 = 0.10            # chance of a "random" char at this position (see code)
+p1 = 0.10            # random char propability
 p2 = 0.40            # chance of a markov-order-1 char at this position (see code)
-p3 = 0.50            # choice of continuing copying from same word
+p3 = 0.50            # skip this position and dont change the char propability
 
-q = 0.03             # add 3% noise words to list of passwords
+q = 0.03             # bonus 3% noise words to list of passwords
 
-# syntax parameters for a password
-nL = 8               # password must have at least nL letters
-nD = 1               # password must have at least nD digit
-nS = 0               # password must have at least nS special (non-letter non-digit)
+#  parameters for a password creation
+nL = 8               # password must have at least letters
+nD = 1               # password must have at least digit
+nS = 0               # password must have at least special (non-letter non-digit)
 
-#### END OF PARAMETERS CONTROLLING PASSWORD GENERATION
-##############################################################################
+# END OF params to control pass generation
+
 
 import random
 import sys
 import string
 import os
-# A short list of high-probability passwords that is used to initialize the
-# password list in case no password files are provided.
+
+#create an empty dict and fill it with passwords from the file that provide .
 high_probability_passwords = """
 
 """
